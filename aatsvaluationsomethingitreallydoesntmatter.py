@@ -28,8 +28,45 @@ class Agent:
     def update_values(self, new_values):
         self.values.update(new_values)
 
+    # Making the agent act based on its current state
+    def act(self):
+        # For loops through list of possible action-state pairings to
+        # see which ones are possible from current state
+        def curr_act():
+            curr_actions = []
+            for i in self.poss_actions:
+                for j in self.poss_actions[i]:
+                    if j == self.curr_state:
+                        curr_actions.append(i)
+            return curr_actions
+        
+        # Valuation Function to calculate utilities of all poss. actions
+        def val_function(curr_actions):
+            utility_list = []
+            for i in curr_actions:
+                utility = 0
+                curr_act_dict = self.all_actions[i]
+                for j in curr_act_dict:
+                    utility += curr_act_dict[j] * self.values[j]
+                utility_list.append([utility, i])
+            return sorted(utility_list, reverse=True)
+        
+        # Getting all possible actions at this moment
+        print("Current State: " + str(self.curr_state))
+        curr_actions = curr_act()
+        print("Possible Actions: " + str(curr_actions))
+        
+        # Calculating valuation
+        curr_utilities = val_function(curr_actions)
+        print("Utilities of actions: ")
+        for i in curr_utilities:
+            print(str(i[1]) + ": " + str(i[0]))
+        
+        # Showing best action
+        chosen_action = curr_utilities[0]
+        print("Chosen action by agent: " + chosen_action[1])
 
-
+        
 
 king_orange = Agent(
         # values
@@ -37,7 +74,7 @@ king_orange = Agent(
          "low_price" : 0.05,
          "low_effort" : 0.5},
         # current state
-        {"hungry":True},
+        {"hungry" : True},
         # all states
             ### What is the difference here between states and actions?
             # The state of being hungry is basically here to provide a state
@@ -75,12 +112,14 @@ king_orange = Agent(
             # access this list, however, one could also simply use a loop for
             # that. Especially in simple cases like these your way of writing
             # would obviously be much more convenient.
-        {"homefood" : "hungry",
-         "mcburgercrap" : "hungry",
-         "michelin" : "hungry"}
+        {"homefood" : [{"hungry":True}],
+         "mcburgercrap" : [{"hungry":True}],
+         "michelin" : [{"hungry":True}]}
         )
 
 
 class State:
     def __init__(self):
         pass
+
+king_orange.act()
