@@ -46,6 +46,7 @@ class Agent:
             for i in curr_actions:
                 utility = 0
                 curr_act_dict = self.all_actions[i]
+                curr_act_dict = curr_act_dict[1]
                 for j in curr_act_dict:
                     utility += curr_act_dict[j] * self.values[j]
                 utility_list.append([utility, i])
@@ -65,12 +66,19 @@ class Agent:
         # Showing best action
         chosen_action = curr_utilities[0]
         print("Chosen action by agent: " + chosen_action[1])
+        
+        # Updating current state
+        ca_statchange = self.all_actions[chosen_action[1]][0]
+        for i in ca_statchange:
+            self.curr_state[i] = ca_statchange[i]
+        print("New State: " + str(self.curr_state))
 
         
 
 king_orange = Agent(
         # values
-        {"quality" : 0.9,
+        {"hungry" : 1.,
+         "quality" : 0.9,
          "low_price" : 0.05,
          "low_effort" : 0.5},
         # current state
@@ -89,17 +97,20 @@ king_orange = Agent(
             # you can also just say "average subjective positive gain",
             # whatever the positive then means to the person.
         {"homefood":
-             {"quality":0.1,
-              "low_price":0.95,
-              "low_effort":0.9},
+             [{"hungry":False},
+              {"quality":0.1,
+               "low_price":0.95,
+               "low_effort":0.9}],
          "mcburgercrap":
-             {"quality":0.2,
+             [{"hungry":False},
+              {"quality":0.2,
               "low_price":0.85,
-              "low_effort":0.7},
+              "low_effort":0.7}],
          "michelin":
-             {"quality":0.8,
+             [{"hungry":False},
+              {"quality":0.8,
               "low_price":0.1,
-              "low_effort":0.7}},
+              "low_effort":0.7}]},
         # all possible actions
             ### isn't it more convenient to write it down like this: ?
             ### {"hungry":
