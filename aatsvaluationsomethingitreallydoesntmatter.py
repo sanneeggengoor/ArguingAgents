@@ -40,10 +40,17 @@ king_orange = Agent(
         {"hungry":True},
         # all states
             ### What is the difference here between states and actions?
+            # The state of being hungry is basically here to provide a state
+            # from which the action(eating at the restaurant) can be taken.
+            # The reason I used this was simply because I follow the paper
         [{"hungry":True},
          {"hungry":False}],
         # all actions
             ### the values are their possibilities right?
+            # Yes, although there are different theoretical interpretations
+            # regarding their meaning. You can say "probability of outcome"
+            # you can also just say "average subjective positive gain",
+            # whatever the positive then means to the person.
         {"homefood":
              {"quality":0.1,
               "low_price":0.95,
@@ -62,6 +69,12 @@ king_orange = Agent(
             ###     ["homefood",
             ###     "mcburgercrap",
             ###     "michelin"]}
+            # I'm strictly following the way it is in the paper right now
+            # The reasoning here is that for every action there are all
+            # statuses listed that can be taken, which makes it easier to
+            # access this list, however, one could also simply use a loop for
+            # that. Especially in simple cases like these your way of writing
+            # would obviously be much more convenient.
         {"homefood" : "hungry",
          "mcburgercrap" : "hungry",
          "michelin" : "hungry"}
