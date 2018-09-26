@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
 
+"""
 class Agent:
     # initializing the agent. The last 4 attributes are empty if not provided
     # and can be added afterwards as well
@@ -9,14 +11,21 @@ class Agent:
                  all_states={},
                  all_actions={},
                  poss_actions={},
-                 sys_transition={}):  ### What is sys_transition?
+                 sys_transition={}):  # Placeholder so far
         # values is a dictionary containing the personal values of the agent.
         self.values = values
-        # curr_state is the state an agent is in at the moment
+        # curr_state is the state an agent is in at the moment. It is a
+        # dictionary consisting of attribute-value pairings, so far booleans.
         self.curr_state = curr_state
-        # all_states are all possible states an agent could be in
+        # all_states is a list of all states(as dictionarys) an agent can be in
         self.all_states = all_states
-        # all_actions are all possible actions an agent could take
+        """
+        All actions are all actions an agent can take. This is a dictionary
+        with entries for all actions. These entries at the moment have each a
+        list consisting of two dictionaries: The first is the state-changes
+        that follow from acting out the action,. The second are the parameters
+        that are used to calculate the utility of the action for the agent.
+        """
         self.all_actions = all_actions
         # poss_actions is a dictionary containing an entry for each action
         # which lists all states that this action can be taken from.
@@ -28,10 +37,12 @@ class Agent:
     def update_values(self, new_values):
         self.values.update(new_values)
 
-    # Making the agent act based on its current state
+    # Making the agent act based on current state, including change in state.
+    # It also gives output with information of all steps.
     def act(self):
+        """ Functions used inside act """
         # For loops through list of possible action-state pairings to
-        # see which ones are possible from current state
+        # see which ones are actable based on current state, returns list.
         def curr_act():
             curr_actions = []
             for i in self.poss_actions:
@@ -51,6 +62,8 @@ class Agent:
                     utility += curr_act_dict[j] * self.values[j]
                 utility_list.append([utility, i])
             return sorted(utility_list, reverse=True)
+        
+        """ Beginning of the "actual" function "act" """
         
         # Getting all possible actions at this moment
         print("Current State: " + str(self.curr_state))
@@ -74,7 +87,7 @@ class Agent:
         print("New State: " + str(self.curr_state))
 
         
-
+# Start of example Agent
 king_orange = Agent(
         # values
         {"hungry" : 1.,
@@ -84,18 +97,9 @@ king_orange = Agent(
         # current state
         {"hungry" : True},
         # all states
-            ### What is the difference here between states and actions?
-            # The state of being hungry is basically here to provide a state
-            # from which the action(eating at the restaurant) can be taken.
-            # The reason I used this was simply because I follow the paper
         [{"hungry":True},
          {"hungry":False}],
         # all actions
-            ### the values are their possibilities right?
-            # Yes, although there are different theoretical interpretations
-            # regarding their meaning. You can say "probability of outcome"
-            # you can also just say "average subjective positive gain",
-            # whatever the positive then means to the person.
         {"homefood":
              [{"hungry":False},
               {"quality":0.1,
@@ -112,25 +116,15 @@ king_orange = Agent(
               "low_price":0.1,
               "low_effort":0.7}]},
         # all possible actions
-            ### isn't it more convenient to write it down like this: ?
-            ### {"hungry":
-            ###     ["homefood",
-            ###     "mcburgercrap",
-            ###     "michelin"]}
-            # I'm strictly following the way it is in the paper right now
-            # The reasoning here is that for every action there are all
-            # statuses listed that can be taken, which makes it easier to
-            # access this list, however, one could also simply use a loop for
-            # that. Especially in simple cases like these your way of writing
-            # would obviously be much more convenient.
         {"homefood" : [{"hungry":True}],
          "mcburgercrap" : [{"hungry":True}],
          "michelin" : [{"hungry":True}]}
         )
 
-
+# Empty class for State, so far placeholder
 class State:
     def __init__(self):
         pass
 
+# Using act function of example Agent to see what happens
 king_orange.act()
