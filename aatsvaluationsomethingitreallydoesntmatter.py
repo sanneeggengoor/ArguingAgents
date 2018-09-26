@@ -50,7 +50,7 @@ class Agent:
                     if j == self.curr_state:
                         curr_actions.append(i)
             return curr_actions
-        
+
         # Valuation Function to calculate utilities of all poss. actions
         def val_function(curr_actions):
             utility_list = []
@@ -59,34 +59,34 @@ class Agent:
                 curr_act_dict = self.all_actions[i]
                 curr_act_dict = curr_act_dict[1]
                 for j in curr_act_dict:
-                    utility += curr_act_dict[j] * self.values[j]
+                    utility += curr_act_dict[j] * self.values[j]  # some renaming would be good here as well : to make sure we're talking about Probability * Importance
                 utility_list.append([utility, i])
             return sorted(utility_list, reverse=True)
-        
+
         """ Beginning of the "actual" function "act" """
-        
+
         # Getting all possible actions at this moment
         print("Current State: " + str(self.curr_state))
         curr_actions = curr_act()
         print("Possible Actions: " + str(curr_actions))
-        
+
         # Calculating valuation
         curr_utilities = val_function(curr_actions)
         print("Utilities of actions: ")
         for i in curr_utilities:
             print(str(i[1]) + ": " + str(i[0]))
-        
+
         # Showing best action
         chosen_action = curr_utilities[0]
         print("Chosen action by agent: " + chosen_action[1])
-        
+
         # Updating current state
         ca_statchange = self.all_actions[chosen_action[1]][0]
         for i in ca_statchange:
             self.curr_state[i] = ca_statchange[i]
         print("New State: " + str(self.curr_state))
 
-        
+
 # Start of example Agent
 king_orange = Agent(
         # values
