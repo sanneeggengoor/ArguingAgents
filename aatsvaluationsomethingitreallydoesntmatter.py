@@ -10,7 +10,6 @@ class Agent:
                  curr_state,
                  all_states={},
                  all_actions={},
-                 poss_actions={},
                  sys_transition={}):  # Placeholder so far
         # values is a dictionary containing the personal values of the agent.
         self.values = values
@@ -27,9 +26,6 @@ class Agent:
         that are used to calculate the utility of the action for the agent.
         """
         self.all_actions = all_actions
-        # poss_actions is a dictionary containing an entry for each action
-        # which lists all states that this action can be taken from.
-        self.poss_actions = poss_actions
 
 
     # Adding a new dictionary of values to the existing values.
@@ -45,8 +41,8 @@ class Agent:
         # see which ones are actable based on current state, returns list.
         def curr_act():
             curr_actions = []
-            for i in self.poss_actions:
-                for j in self.poss_actions[i]:
+            for i in self.all_actions:
+                for j in self.all_actions[i].possible_states:
                     if j == self.curr_state:
                         curr_actions.append(i)
             return curr_actions
@@ -56,10 +52,9 @@ class Agent:
             utility_list = []
             for i in curr_actions:
                 utility = 0
-                curr_act_dict = self.all_actions[i]
-                curr_act_dict = curr_act_dict[1]
-                for j in curr_act_dict:
-                    utility += curr_act_dict[j] * self.values[j]  # some renaming would be good here as well : to make sure we're talking about Probability * Importance
+                curr_action_probabilities = self.all_actions[i].attributes
+                for j in curr_action_probabilities:
+                    utility += curr_action_probabilities[j] * self.values[j]
                 utility_list.append([utility, i])
             return sorted(utility_list, reverse=True)
 
@@ -81,11 +76,48 @@ class Agent:
         print("Chosen action by agent: " + chosen_action[1])
 
         # Updating current state
-        ca_statchange = self.all_actions[chosen_action[1]][0]
+        ca_statchange = self.all_actions[chosen_action[1]].state_changes
         for i in ca_statchange:
             self.curr_state[i] = ca_statchange[i]
         print("New State: " + str(self.curr_state))
 
+class Action:
+    def __init__(self,
+                 state_changes = {}, 
+                 attributes = {}, 
+                 possible_states = []):
+        self.state_changes = state_changes
+        self.attributes = attributes
+        self.possible_states = possible_states
+        
+        
+# King Orange's actions
+orange_actions = {}
+# Homefood
+orange_actions["homefood"] = Action()
+orange_actions["homefood"].state_changes = {"hungry" : False}
+orange_actions["homefood"].attributes = {"quality":0.1,
+                                         "low_price":0.95,
+                                         "low_effort":0.9}
+orange_actions["homefood"].possible_states = [{"hungry":True}]
+
+# McBurgercrap
+orange_actions["mcburgercrap"] = Action()
+orange_actions["mcburgercrap"].state_changes = {"hungry" : False}
+orange_actions["mcburgercrap"].attributes = {"quality":0.2,
+                                         "low_price":0.85,
+                                         "low_effort":0.7}
+orange_actions["mcburgercrap"].possible_states = [{"hungry":True}]
+
+# Michelin
+orange_actions["michelin"] = Action()
+orange_actions["michelin"].state_changes = {"hungry" : False}
+orange_actions["michelin"].attributes = {"quality":0.8,
+                                         "low_price":0.1,
+                                         "low_effort":0.7}
+orange_actions["michelin"].possible_states = [{"hungry":True}]
+
+    
 
 # Start of example Agent
 king_orange = Agent(
@@ -100,21 +132,7 @@ king_orange = Agent(
         [{"hungry":True},
          {"hungry":False}],
         # all actions
-        {"homefood":
-             [{"hungry":False},
-              {"quality":0.1,
-               "low_price":0.95,
-               "low_effort":0.9}],
-         "mcburgercrap":
-             [{"hungry":False},
-              {"quality":0.2,
-              "low_price":0.85,
-              "low_effort":0.7}],
-         "michelin":
-             [{"hungry":False},
-              {"quality":0.8,
-              "low_price":0.1,
-              "low_effort":0.7}]},
+        orange_actions,
         # all possible actions
         {"homefood" : [{"hungry":True}],
          "mcburgercrap" : [{"hungry":True}],
