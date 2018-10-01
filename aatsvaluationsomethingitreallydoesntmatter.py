@@ -8,6 +8,7 @@ class Agent:
     def __init__(self,
                  values,
                  curr_state,
+                 desired_state={},
                  all_states={},
                  all_actions={},
                  sys_transition={}):  # Placeholder so far
@@ -16,6 +17,8 @@ class Agent:
         # curr_state is the state an agent is in at the moment. It is a
         # dictionary consisting of attribute-value pairings, so far booleans.
         self.curr_state = curr_state
+        # State that at this moment is desired
+        self.desired_state = desired_state
         # all_states is a list of all states(as dictionarys) an agent can be in
         self.all_states = all_states
         """
@@ -39,13 +42,32 @@ class Agent:
         """ Functions used inside act """
         # For loops through list of possible action-state pairings to
         # see which ones are actable based on current state, returns list.
-        def curr_act():
+        def curr_poss_act():
             curr_actions = []
             for i in self.all_actions:
                 for j in self.all_actions[i].possible_states:
                     if j == self.curr_state:
                         curr_actions.append(i)
             return curr_actions
+        
+        def curr_des_act(actions):
+            curr_actions = {}
+            for i in actions:
+                target_meter = 0
+                for j in self.desired_state:
+                    if j in self.all_actions[i].state_changes:
+                        if self.desired_state[j] == self.all_actions[i].state_changes[j]:
+                            target_meter += 1
+                if len(curr_actions) > 0:
+                    if curr_actions["meter"] == target_meter:
+                        curr_actions["actions"].append(i)
+                    elif curr_actions["meter"] < target_meter:
+                        curr_actions["meter"] = target_meter
+                        curr_actions["actions"] = [i]
+                else:
+                    curr_actions["meter"] = target_meter
+                    curr_actions["actions"] = [i]
+            return curr_actions["actions"]
 
         # Valuation Function to calculate utilities of all poss. actions
         def val_function(curr_actions):
@@ -62,8 +84,12 @@ class Agent:
 
         # Getting all possible actions at this moment
         print("Current State: " + str(self.curr_state))
-        curr_actions = curr_act()
+        curr_actions = curr_poss_act()
         print("Possible Actions: " + str(curr_actions))
+        
+        # Calculating desired state actions
+        curr_actions = curr_des_act(curr_actions)
+        print("Actions with most desired states: " + str(curr_actions))
 
         # Calculating valuation
         curr_utilities = val_function(curr_actions)
@@ -122,12 +148,13 @@ orange_actions["michelin"].possible_states = [{"hungry":True}]
 # Start of example Agent
 king_orange = Agent(
         # values
-        {"hungry" : 1.,
-         "quality" : 0.9,
+        {"quality" : 0.9,
          "low_price" : 0.05,
          "low_effort" : 0.5},
         # current state
         {"hungry" : True},
+        # desired state
+        {"hungry" : False},
         # all states
         [{"hungry":True},
          {"hungry":False}],
@@ -149,6 +176,8 @@ king_orange.act()
 
 
 
+
+"""
 '''FORMAL AATS'''
 # finite, non-empty set of states with the first item as initial state
 Q = [q0,q1,q2]
@@ -180,3 +209,4 @@ def tau(State, JointAction):
 # will return the set of primitive propositions satisfied in each case
 def pi(State):
     pass
+"""
