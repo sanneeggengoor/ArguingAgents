@@ -10,8 +10,7 @@ class Agent:
                  curr_state,
                  desired_state={},
                  all_states={},
-                 all_actions={},
-                 sys_transition={}):  # Placeholder so far
+                 all_actions={}):
         # values is a dictionary containing the personal values of the agent.
         self.values = values
         # curr_state is the state an agent is in at the moment. It is a
@@ -19,8 +18,6 @@ class Agent:
         self.curr_state = curr_state
         # State that at this moment is desired
         self.desired_state = desired_state
-        # all_states is a list of all states(as dictionarys) an agent can be in
-        self.all_states = all_states
         """
         All actions are all actions an agent can take. This is a dictionary
         with entries for all actions. These entries at the moment have each a
@@ -155,9 +152,6 @@ king_orange = Agent(
         {"hungry" : True},
         # desired state
         {"hungry" : False},
-        # all states
-        [{"hungry":True},
-         {"hungry":False}],
         # all actions
         orange_actions,
         # all possible actions
@@ -173,40 +167,3 @@ class State:
 
 # Using act function of example Agent to see what happens
 king_orange.act()
-
-
-
-
-"""
-'''FORMAL AATS'''
-# finite, non-empty set of states with the first item as initial state
-Q = [q0,q1,q2]
-# finite, non-empty set of agents
-Ag = [king_orange]
-# sets of possible actions for every agent where the intersection of Aci and Acj is empty
-Ac1 = [ac1a, ac1b, ac1c]
-Ac2 = [ac2a, ac2b, ac2c]
-Ac3 = [ac3a, ac3b, ac3c]
-# Ac_king_orange = retrieve possible actions from king_orange
-
-# finite, non-empty set of atomic propositions (things like: hungry, home etc., these could both be true or false)
-# Phi = [prop1, prop2, prop3]
-Phi = ["hungry"]
-
-# finite, non-empty set of values for each agent
-# Av1 = {val1a: ...., val1b: ..., val1c: ...}
-Av_king_orange = king_orange.values
-
-
-# will return the set of states from which every action in ActionSet may be executed
-def rho(ActionSet):
-    pass
-
-# will return state that would result from JointAction in state State
-def tau(State, JointAction):
-    pass
-
-# will return the set of primitive propositions satisfied in each case
-def pi(State):
-    pass
-"""
