@@ -8,11 +8,9 @@ class State:
 
 class Action:
     def __init__(self,
-                involved_agent,
                 initial_states,
                 resulting_state,
                 utilities):
-        self.involved_agent = involved_agent
         self.initial_states = initial_states
         self.resulting_state = resulting_state
         self.utilities = utilities
@@ -46,26 +44,22 @@ Q = [home_before_eating,
 #### ACTIONS
 
 k_goes_to_michelin = Action(
-        king_orange,
         [home_before_eating],
         after_dinner_michelin,
         {"quality":0.8, "low_price":0.1}
 )
 k_goes_to_febo = Action(
-        king_orange,
         [home_before_eating],
         after_dinner_febo,
         {"quality":0.2, "low_price":0.9}
 )
 
 t_goes_to_michelin = Action(
-        tokkie,
         [home_before_eating],
         after_dinner_michelin,
         {"quality":0.8, "low_price":0.1}
 )
 t_goes_to_febo = Action(
-        tokkie,
         [home_before_eating],
         after_dinner_febo,
         {"quality":0.2, "low_price":0.9}
@@ -123,13 +117,24 @@ def pi(State):
 
 # print(pi(home_before_eating))
 
+def get_involved_agent(Action):
+    for agent in ag:
+        if Action in agent.actions:
+            return agent
+
 def delta(Action):
-    values = Action.involved_agent.values
+    involved_agent = get_involved_agent(Action)
+    values = involved_agent.values
     utilities = Action.utilities
     exp_ut = 0
     for item in values:
         exp_ut += utilities[item] * values[item]
     return exp_ut
+
+
+
+
+
 
 print(delta(t_goes_to_michelin))
 print(delta(t_goes_to_febo))
