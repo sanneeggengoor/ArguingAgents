@@ -9,7 +9,6 @@ class Agent:
                  values,
                  curr_state,
                  desired_state={},
-                 all_states={},
                  all_actions={}):
         # values is a dictionary containing the personal values of the agent.
         self.values = values
@@ -153,11 +152,7 @@ king_orange = Agent(
         # desired state
         {"hungry" : False},
         # all actions
-        orange_actions,
-        # all possible actions
-        {"homefood" : [{"hungry":True}],
-         "mcburgercrap" : [{"hungry":True}],
-         "michelin" : [{"hungry":True}]}
+        orange_actions
         )
 
 # Empty class for State, so far placeholder
