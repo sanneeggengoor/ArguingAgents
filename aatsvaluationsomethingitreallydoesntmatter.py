@@ -3,7 +3,7 @@
 
 """
 class Agent:
-    # initializing the agent. The last 4 attributes are empty if not provided
+    # initializing the agent. The last 2 attributes are empty if not provided
     # and can be added afterwards as well
     def __init__(self,
                  values,
