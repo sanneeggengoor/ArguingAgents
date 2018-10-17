@@ -65,7 +65,7 @@ t_goes_to_febo = Action(
         {"quality":0.2, "low_price":0.9}
 )
 
-
+ac = [k_goes_to_michelin, k_goes_to_febo, t_goes_to_michelin, t_goes_to_febo]
 
 #### AGENTS
 
@@ -131,16 +131,38 @@ def delta(Action):
         exp_ut += utilities[item] * values[item]
     return exp_ut
 
+#stage 1 critical questions
+def problem_formulation(Init_state,Resulting_state, Action, goal):
+    involved_agent = get_involved_agent(Action)
+    if tau(Init_state, Action) != Resulting_state:
+        return False
+    elif goal not in pi(Init_state):
+        return False
+    elif Init_state not in Q:
+        return False
+    elif Action not in ac:
+        return False
+    elif tau(Init_state, Action) not in Q:
+        return False
+    # elif involved_agent.values
+    else:
+        return True
 
 
 
 
-
-print(delta(t_goes_to_michelin))
-print(delta(t_goes_to_febo))
-print(delta(k_goes_to_michelin))
-print(delta(k_goes_to_febo))
-
-
-
-### make function to get involved agent instead of having it defined in class Action.
+# print("Set of states: \t" + str(Q))
+# print("Initial State \t" + str(Q[0]))
+# print("Set of Agents: \t"+ str(ag))
+# print("Set of Actions of King Orange: \t"+ str(king_orange.actions))
+# print("Set of Values of King Orange: \t"+ str(king_orange.values))
+# print("Set of Propositions: \t"+str(phi))
+# print("rho(k_goes_to_michelin):\t"+str(rho(k_goes_to_michelin)))
+# print("tau(home_before_eating, k_goes_to_michelin):\t" +str(tau(home_before_eating, k_goes_to_michelin)))
+# print("Delta functions:")
+# print(Q)
+# print(tau(home_before_eating,k_goes_to_michelin))
+print("Expected utility of Tokkie going to Michelin:\t \t" + str(delta(t_goes_to_michelin)))
+print("Expected utility of Tokkie going to Febo:\t \t" +str(delta(t_goes_to_febo)))
+print("Expected utility of King Orange going to Michelin:\t" +str(delta(k_goes_to_michelin)))
+print("Expected utility of King Orange going to Febo:\t \t" +str(delta(k_goes_to_febo)))
