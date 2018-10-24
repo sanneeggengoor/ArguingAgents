@@ -47,10 +47,10 @@ Q = [home_before_eating,
 #### ACTIONS
 
 k_goes_to_michelin = Action(
-        [home_before_eating],
-        after_dinner_michelin,
-        {"quality":0.8, "low_price":0.1},
-        "King orange goes to Michelin"
+        [home_before_eating],               # possible initial states
+        after_dinner_michelin,              # following state
+        {"quality":0.8, "low_price":0.1},   # utilities associated with this action
+        "King orange goes to Michelin"      # name of the action
 )
 k_goes_to_febo = Action(
         [home_before_eating],
@@ -72,12 +72,14 @@ t_goes_to_febo = Action(
         "Tokkie goes to FEBO"
 )
 
+
+# list of possible actions
 ac = [k_goes_to_michelin, k_goes_to_febo, t_goes_to_michelin, t_goes_to_febo]
 
 #### AGENTS
 
 king_orange = Agent(
-        [k_goes_to_michelin, k_goes_to_febo],   #list with actions
+        [k_goes_to_michelin, k_goes_to_febo],   #list with actions agent can perform
         {"quality":0.9, "low_price":0.1}        #dictionary with values
 )
 
@@ -94,11 +96,6 @@ valueset = ["quality", "low_price"]
 # Phi = [prop1, prop2, prop3]
 phi = ["hungry"]
 
-# # finite, non-empty set of values for each agent
-# # Av1 = {val1a: ...., val1b: ..., val1c: ...}
-# Av_king_orange = king_orange.values
-
-# print(tokkie.values)
 
 # will return the set of states from which every action in ActionSet may be executed
 def rho(Action):
@@ -119,15 +116,15 @@ def pi(State):
     return State.propositions
 
 
-# print(pi(home_before_eating))
 
+# returns the agent involved in this action
 def get_involved_agent(Action):
     for agent in ag:
         if Action in agent.actions:
             return agent
 
 
-
+# valuation function with expected utility
 def delta(Action):
     involved_agent = get_involved_agent(Action)
     values = involved_agent.values
@@ -168,6 +165,7 @@ def problem_formulation(Init_state,Resulting_state, Action, goal):
                 return True
     return False
 
+# stage2 epistemic reasoning
 def epistemic_reasoning(Init_state, Action):
     ## CQ 1
     if not Init_state == Q[0]:
@@ -177,42 +175,25 @@ def epistemic_reasoning(Init_state, Action):
     return True
 
 
-
+# function to choose action
 def choose_action(Init_state, Agent, goal):
     actions_agent = Agent.actions
     possible_actions = []
+    # loop through all actions agent can perform
     for action in actions_agent:
         res_state = tau(Init_state, action)
+        # make sure they pass the critical questions
         if problem_formulation(Init_state, res_state, action, goal):
             if epistemic_reasoning(Init_state, action):
                 possible_actions.append(action)
     action_value_dict = {}
+    # calculate expected utilities
     for pos_action in possible_actions:
         action_value_dict[pos_action.name] = delta(pos_action)
-    print("The possible actions with their values for this agent are:\t \t" + str(action_value_dict))
+    print("The possible actions with their values for this agent are:\t \n" + str(action_value_dict))
+    # return highest action
     return max(action_value_dict.items(), key=operator.itemgetter(1))[0]
 
 
 
-# print("Set of states: \t" + str(Q))
-# print("Initial State \t" + str(Q[0]))
-# print("Set of Agents: \t"+ str(ag))
-# print("Set of Actions of King Orange: \t"+ str(king_orange.actions))
-# print("Set of Values of King Orange: \t"+ str(king_orange.values))
-# print("Set of Propositions: \t"+str(phi))
-# print("rho(k_goes_to_michelin):\t"+str(rho(k_goes_to_michelin)))
-# print("tau(home_before_eating, k_goes_to_michelin):\t" +str(tau(home_before_eating, k_goes_to_michelin)))
-# print("Delta functions:")
-# print(Q)
-# print(tau(home_before_eating,k_goes_to_michelin))
-
-#
-
-# print("Expected utility of Tokkie going to Michelin:\t \t" + str(delta(t_goes_to_michelin)))
-# print("Expected utility of Tokkie going to Febo:\t \t" +str(delta(t_goes_to_febo)))
-# print("Expected utility of King Orange going to Michelin:\t" +str(delta(k_goes_to_michelin)))
-# print("Expected utility of King Orange going to Febo:\t \t" +str(delta(k_goes_to_febo)))
-# print("pi(state home_before_eating): \t \t" + str(pi(home_before_eating)))
-# print("Problem Formulation (home hungry to after_dinner_michelin with king to michelin and goal hungry true):\t \t" + str(problem_formulation(home_before_eating, after_dinner_michelin, k_goes_to_michelin, {"hungry": True})))
-# print("epistemic_reasoning:\t \t" + str(epistemic_reasoning(home_before_eating,k_goes_to_michelin)))
-print("Action that is chosen for agent King Orange who is hungry and home:\t \t" + str(choose_action(home_before_eating, king_orange, {"hungry":False})))
+print("Action that is chosen for agent King Orange who is hungry and home:\t \n" + str(choose_action(home_before_eating, king_orange, {"hungry":False})))
