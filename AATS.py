@@ -30,7 +30,7 @@ class Agent:
 #### STATES
 
 home_before_eating = State(
-        {"hungry": True},            #dictionary with propositions (from Phi)
+        {"hungry": True}            #dictionary with propositions (from Phi)
 )
 after_dinner_michelin = State(
         {"hungry": False}
@@ -38,11 +38,15 @@ after_dinner_michelin = State(
 after_dinner_febo = State(
         {"hungry": False}
 )
+after_dinner_homefood = State(
+        {"hungry": False}
+)
 
 # finite, non-empty set of states with the first item as initial state
 Q = [home_before_eating,
     after_dinner_michelin,
-    after_dinner_febo]
+    after_dinner_febo,
+    after_dinner_homefood]
 
 #### ACTIONS
 
@@ -58,6 +62,12 @@ k_goes_to_febo = Action(
         {"quality":0.2, "low_price":0.9},
         "King orange goes to FEBO"
 )
+k_does_homefood = Action(
+        [home_before_eating],
+        after_dinner_homefood,
+        {"quality":0.7, "low_price":0.9},
+        "King Orange eats at home"
+)
 
 t_goes_to_michelin = Action(
         [home_before_eating],
@@ -71,20 +81,26 @@ t_goes_to_febo = Action(
         {"quality":0.2, "low_price":0.9},
         "Tokkie goes to FEBO"
 )
+t_does_homefood = Action(
+        [home_before_eating],
+        after_dinner_homefood,
+        {"quality":0.5, "low_price":0.9},
+        "Tokkie eats at home"
+)
 
 
 # list of possible actions
-ac = [k_goes_to_michelin, k_goes_to_febo, t_goes_to_michelin, t_goes_to_febo]
+ac = [k_goes_to_michelin, k_goes_to_febo, k_does_homefood, t_goes_to_michelin, t_goes_to_febo, t_does_homefood]
 
 #### AGENTS
 
 king_orange = Agent(
-        [k_goes_to_michelin, k_goes_to_febo],   #list with actions agent can perform
+        [k_goes_to_michelin, k_goes_to_febo, k_does_homefood],   #list with actions agent can perform
         {"quality":0.9, "low_price":0.1}        #dictionary with values
 )
 
 tokkie = Agent(
-        [t_goes_to_michelin, t_goes_to_febo],
+        [t_goes_to_michelin, t_goes_to_febo, t_does_homefood],
         {"quality":0.3, "low_price":0.8}
 )
 # finite, non-empty set of agents
@@ -141,8 +157,11 @@ def problem_formulation(Init_state,Resulting_state, Action, goal):
     if tau(Init_state, Action) != Resulting_state:
         return False
     ## CQ 3
-    if not all(x in set(list(pi(Init_state).keys())) for x in set(list(goal.keys()))):
+    if not all(x in set(list(pi(Resulting_state).keys())) for x in set(list(goal.keys()))):
         return False
+    for value in list(goal.keys()):
+        if goal.get(value) != pi(Resulting_state).get(value):
+            return False
     ## CQ12
     if Init_state not in Q:
         return False
@@ -196,4 +215,4 @@ def choose_action(Init_state, Agent, goal):
 
 
 
-print("Action that is chosen for agent King Orange who is hungry and home:\t \n" + str(choose_action(home_before_eating, king_orange, {"hungry":False})))
+print("Action that is chosen for agent Tokkie who is hungry and home:\t \n" + str(choose_action(home_before_eating, tokkie, {"hungry":False})))
