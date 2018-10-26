@@ -238,31 +238,29 @@ class State:
         """
         self.threshold = threshold
         
-        
+""" Beginning of Example 1 """       
+
 # King Orange's actions
 orange_actions = {}
 # Homefood
 orange_actions["homefood"] = Action()
 orange_actions["homefood"].state_changes = {"hungry" : [0, "set"]}
-orange_actions["homefood"].attributes = {"quality":0.1,
-                                         "low_price":0.95,
-                                         "low_effort":0.9}
+orange_actions["homefood"].attributes = {"quality":0.7,
+                                         "low_price":0.9}
 orange_actions["homefood"].possible_states = [{"hungry":True}]
 
-# McBurgercrap
-orange_actions["mcburgercrap"] = Action()
-orange_actions["mcburgercrap"].state_changes = {"hungry" : [0, "set"]}
-orange_actions["mcburgercrap"].attributes = {"quality":0.2,
-                                         "low_price":0.85,
-                                         "low_effort":0.7}
-orange_actions["mcburgercrap"].possible_states = [{"hungry":True}]
+# Febo
+orange_actions["febo"] = Action()
+orange_actions["febo"].state_changes = {"hungry" : [0, "set"]}
+orange_actions["febo"].attributes = {"quality":0.2,
+                                         "low_price":0.9}
+orange_actions["febo"].possible_states = [{"hungry":True}]
 
 # Michelin
 orange_actions["michelin"] = Action()
 orange_actions["michelin"].state_changes = {"hungry" : [0, "set"]}
 orange_actions["michelin"].attributes = {"quality":0.8,
-                                         "low_price":0.1,
-                                         "low_effort":0.7}
+                                         "low_price":0.1}
 orange_actions["michelin"].possible_states = [{"hungry":True}]
 
 # King Orange's States
@@ -274,22 +272,208 @@ orange_states["hungry"].desired = 0
 orange_states["hungry"].threshold = 0.6
 
 
-
 # Start of example Agent
 king_orange = Agent(
         # values
         {"quality" : 0.9,
-         "low_price" : 0.05,
-         "low_effort" : 0.5,
+         "low_price" : 0.1,
          "hungry" : 0.8},
         # current state
         orange_states,
         # all actions
         orange_actions
-        )
+        )      
 
+# Tokkie's actions
+tokkie_actions = {}
+# Homefood
+tokkie_actions["homefood"] = Action()
+tokkie_actions["homefood"].state_changes = {"hungry" : [0, "set"]}
+tokkie_actions["homefood"].attributes = {"quality":0.7,
+                                         "low_price":0.9}
+tokkie_actions["homefood"].possible_states = [{"hungry":True}]
 
+# McBurgercrap
+tokkie_actions["febo"] = Action()
+tokkie_actions["febo"].state_changes = {"hungry" : [0, "set"]}
+tokkie_actions["febo"].attributes = {"quality":0.2,
+                                         "low_price":0.9}
+tokkie_actions["febo"].possible_states = [{"hungry":True}]
+
+# Michelin
+tokkie_actions["michelin"] = Action()
+tokkie_actions["michelin"].state_changes = {"hungry" : [0, "set"]}
+tokkie_actions["michelin"].attributes = {"quality":0.8,
+                                         "low_price":0.1}
+tokkie_actions["michelin"].possible_states = [{"hungry":True}]
+
+# King Orange's States
+tokkie_states = {}
+# Hungry
+tokkie_states["hungry"] = State()
+tokkie_states["hungry"].current = 1
+tokkie_states["hungry"].desired = 0
+tokkie_states["hungry"].threshold = 0.6
+
+# Start of example Agent
+tokkie = Agent(
+        # values
+        {"quality" : 0.3,
+         "low_price" : 0.8,
+         "hungry" : 0.8},
+        # current state
+        tokkie_states,
+        # all actions
+        tokkie_actions)
         
 
-# Using act function of example Agent to see what happens
+
+# Using act function of example Agent to see what 
+print("\n---First example for comparison with the AATS-system---\n")
+print("This example uses the same parameters than the AATS. It does not "
+      "use the 'first stage' of evaluation, as there is only one state "
+      "that is considered, 'hungry'.\n")
+print("Computing king orange's actions: \n")
 king_orange.act()
+print("\n")
+print("Computing tokkie's actions: \n")
+tokkie.act()
+print("\n")
+
+
+""" Beginning of Example 2 """ 
+
+# Tokkie's actions
+tok_rel_actions = {}
+# Homefood
+tok_rel_actions["homefood"] = Action()
+tok_rel_actions["homefood"].state_changes = {"hungry" : [0, "set"],
+                                            "stressed" : [0.2, "add"]}
+tok_rel_actions["homefood"].attributes = {"quality":0.7,
+                                         "low_price":0.9}
+tok_rel_actions["homefood"].possible_states = [{"hungry":True, "stressed":True},
+                                              {"hungry":True, "stressed":False}]
+
+# McBurgercrap
+tok_rel_actions["febo"] = Action()
+tok_rel_actions["febo"].state_changes = {"hungry" : [0, "set"],
+                                                "stressed" : [-0.4, "add"]}
+tok_rel_actions["febo"].attributes = {"quality":0.2,
+                                         "low_price":0.9}
+tok_rel_actions["febo"].possible_states = [{"hungry":True, "stressed":True},
+                                                  {"hungry":True, "stressed":False}]
+
+# Michelin
+tok_rel_actions["michelin"] = Action()
+tok_rel_actions["michelin"].state_changes = {"hungry" : [0, "set"],
+                                            "stressed" : [-0.4, "add"]}
+tok_rel_actions["michelin"].attributes = {"quality":0.8,
+                                         "low_price":0.1}
+tok_rel_actions["michelin"].possible_states = [{"hungry":True, "stressed":True},
+                                              {"hungry":True, "stressed":False}]
+
+# King Orange's States
+tok_rel_states = {}
+# Hungry
+tok_rel_states["hungry"] = State()
+tok_rel_states["hungry"].current = 1
+tok_rel_states["hungry"].desired = 0
+tok_rel_states["hungry"].threshold = 0.6
+
+# Stressed
+tok_rel_states["stressed"] = State()
+tok_rel_states["stressed"].current = 0.4
+tok_rel_states["stressed"].desired = 0
+tok_rel_states["stressed"].threshold = 0.6
+
+
+# Start of example Agent
+tok_rel = Agent(
+        # values
+        {"quality" : 0.3,
+         "low_price" : 0.8,
+         "stressed" : 0.6,
+         "hungry" : 0.8},
+        # current state
+        tok_rel_states,
+        # all actions
+        tok_rel_actions)
+
+
+# Tokkie's actions
+tok_str_actions = {}
+# Homefood
+tok_str_actions["homefood"] = Action()
+tok_str_actions["homefood"].state_changes = {"hungry" : [0, "set"],
+                                            "stressed" : [0.2, "add"]}
+tok_str_actions["homefood"].attributes = {"quality":0.7,
+                                         "low_price":0.9}
+tok_str_actions["homefood"].possible_states = [{"hungry":True, "stressed":True},
+                                              {"hungry":True, "stressed":False}]
+
+# McBurgercrap
+tok_str_actions["febo"] = Action()
+tok_str_actions["febo"].state_changes = {"hungry" : [0, "set"],
+                                                "stressed" : [-0.4, "add"]}
+tok_str_actions["febo"].attributes = {"quality":0.2,
+                                         "low_price":0.9}
+tok_str_actions["febo"].possible_states = [{"hungry":True, "stressed":True},
+                                                  {"hungry":True, "stressed":False}]
+
+# Michelin
+tok_str_actions["michelin"] = Action()
+tok_str_actions["michelin"].state_changes = {"hungry" : [0, "set"],
+                                            "stressed" : [-0.4, "add"]}
+tok_str_actions["michelin"].attributes = {"quality":0.8,
+                                         "low_price":0.1}
+tok_str_actions["michelin"].possible_states = [{"hungry":True, "stressed":True},
+                                              {"hungry":True, "stressed":False}]
+
+# King Orange's States
+tok_str_states = {}
+# Hungry
+tok_str_states["hungry"] = State()
+tok_str_states["hungry"].current = 1
+tok_str_states["hungry"].desired = 0
+tok_str_states["hungry"].threshold = 0.6
+
+# Stressed
+tok_str_states["stressed"] = State()
+tok_str_states["stressed"].current = 0.8
+tok_str_states["stressed"].desired = 0
+tok_str_states["stressed"].threshold = 0.6
+
+
+# Start of example Agent
+tok_str = Agent(
+        # values
+        {"quality" : 0.3,
+         "low_price" : 0.8,
+         "stressed" : 0.6,
+         "hungry" : 0.8},
+        # current state
+        tok_str_states,
+        # all actions
+        tok_str_actions)
+        
+# Using act function of example Agent to see what happens
+print("\n---Second example to present first level of comparison---\n")
+print("This example adds a 'stressed'-state, representing the level of "
+      "stress the agent is in. Building on the example-agent of 'Tokkie', "
+      "the two examples that are used here are 'Tokkie relaxed', so "
+      "Tokkie in a relaxed state, and 'Tokkie stressed', Tokkie in a stressed "
+      "state. Both restaurants have a relaxing effect due to their atmosphere "
+      "while homefood increases stress due to the effort needed to prepare "
+      "food.\n")
+print("Computing relaxed tokkie's actions:\n")
+tok_rel.act()
+print("\n")
+print("Computing stressed tokkie's actions:\n")
+tok_str.act()
+print("\nAs with the previous example, the relaxed Tokkie has both "
+      "restaurants as well as the homefood-actions available. The utilities "
+      "and therefore the chosen action haven't changed. The stressed Tokkie "
+      "however feels 'too stressed' to prepare food and therefore only "
+      "considers going to the restaurant. The utilities are still the same, "
+      "however limited to the restaurant, which is why the stressed Tokkie "
+      "chooses to go to febo, ultimately relieving him from hunger and stress.")
